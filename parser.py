@@ -1,9 +1,6 @@
 import json
 import requests
 
-from biothings import config
-logger = config.logger
-
 def load_filenames():
     r = requests.get('https://raw.githubusercontent.com/outbreak-info/covid19_LST_report_data/main/reportlist.txt')
     reportlist=r.text.split('\n')
@@ -16,5 +13,12 @@ def load_annotations():
     for eachjson in formattedlist:
         fileurl = basejsonurl+eachjson
         rawdoc = requests.get(fileurl)
-        doc = json.loads(rawdoc.text)
+        if rawdoc.status_code == 200:
+            doc = json.loads(rawdoc.text)
+        else:
+            continue
         yield doc
+
+if __name__ == '__main__':
+    with open('output.json', 'w') as output:
+        json.dump([i for i in load_annotations()], output)
