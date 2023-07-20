@@ -18,7 +18,3 @@ def load_annotations():
         else:
             continue
         yield doc
-
-if __name__ == '__main__':
-    with open('output.json', 'w') as output:
-        json.dump([i for i in load_annotations()], output)
